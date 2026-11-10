@@ -1,14 +1,19 @@
 from inicializador import iniciar
 from seletor import selecionar_formula
 from regras import aplicar_regra, criar_ramos
-from verificador import verificar_fechamento, verificar_saturacao, obter_contraexemplo, criar_resultado
+from verificador import verificar_fechamento, obter_contraexemplo
 from historico import registrar_evento
+from estruturas import *
 
 def resolver(argumento):
+    estado = EstadoTableau()
     ramo_inicial = iniciar(argumento)
-    pilha = [ramo_inicial]
-    while pilha:
-        ramo = pilha.pop()
+    estado.ramos_pendentes.append(ramo_inicial)
+
+    while estado.ramos_pendentes:
+
+        estado.ramo_atual = estado.ramos_pendentes.pop()
+        ramo = estado.ramo_atual
 
         if verificar_fechamento(ramo):
             registrar_evento(ramo, "fechamento")
@@ -17,7 +22,8 @@ def resolver(argumento):
         formula = selecionar_formula(ramo)
         if formula is None:
             contraexemplo = obter_contraexemplo(ramo)
-            return criar_resultado(False, contraexemplo)
+
+            return ResultadoTableau(valido= False, historico = estado.historico, contraexemplo=contraexemplo, ramo_aberto=ramo)
 
         ramo.expandidos.add(formula.id)
 
@@ -25,6 +31,6 @@ def resolver(argumento):
         novos_ramos = criar_ramos(ramo, alternativas)
 
         for novo_ramo in reversed(novos_ramos):
-            pilha.append(novo_ramo)
+            estado.ramos_pendentes.append(novo_ramo)
 
-    return criar_resultado(True)
+    return ResultadoTableau(valido=True, historico=estado.historico)
