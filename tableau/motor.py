@@ -16,7 +16,7 @@ def resolver(argumento):
         ramo = estado.ramo_atual
 
         if verificar_fechamento(ramo):
-            registrar_evento(ramo, "fechamento")
+            registrar_evento(estado ,ramo, "fechamento")
             continue
 
         formula = selecionar_formula(ramo)
