@@ -1,0 +1,37 @@
+from estruturas import *
+
+import sys
+sys.path.insert(0, "../")
+
+from code_base import *
+
+def getChildren(formula_marcada: FormulaMarcada):
+	return [c for c in formula_marcada.formula.children]
+
+def alpha_and(formula_marcada: FormulaMarcada):
+	children = getChildren(formula_marcada)	
+
+	new_c1 = FormulaMarcada(children[0], True)
+	new_c2 = FormulaMarcada(children[1], True)
+
+	return [new_c1, new_c2]
+
+def alpha_or(formula_marcada: FormulaMarcada):
+	children = getChildren(formula_marcada)
+
+	new_c1 = FormulaMarcada(children[0], False)
+	new_c2 = FormulaMarcada(children[1], False)
+	return [new_c1, new_c2]
+
+def alpha_implies(formula_marcada: FormulaMarcada): 
+	children = getChildren(formula_marcada)      	
+ 
+	new_c1 = FormulaMarcada(children[0], True) 
+	new_c2 = FormulaMarcada(children[1], False)
+	return [new_c1, new_c2]
+
+def alpha_not(formula_marcada: FormulaMarcada): 
+	children = getChildren(formula_marcada)
+
+	new_c1 = FormulaMarcada(children[0], False)
+	return [new_c1]
