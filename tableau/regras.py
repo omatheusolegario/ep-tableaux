@@ -35,3 +35,34 @@ def alpha_not(formula_marcada: FormulaMarcada):
 
 	new_c1 = FormulaMarcada(children[0], False)
 	return [new_c1]
+
+def beta_and(formula_marcada: FormulaMarcada): 
+	children = getChildren(formula_marcada)
+	
+	ramo1 = FormulaMarcada(children[0], False)
+	ramo2 = FormulaMarcada(children[1], False)
+
+	return [ramo1, ramo2]
+
+def beta_or(formula_marcada: FormulaMarcada):
+	children = getChildren(formula_marcada)
+
+	ramo1 = FormulaMarcada(children[0], True)
+	ramo2 = FormulaMarcada(children[1], True)
+
+	return [ramo1, ramo2]
+
+def beta_implies(formula_marcada: FormulaMarcada):
+	children = getChildren(formula_marcada)
+
+	ramo1 = FormulaMarcada(children[0], False)
+	ramo2 = FormulaMarcada(children[1], True)
+	
+	return [ramo1, ramo2]
+
+def beta_not(formula_marcada: FormulaMarcada):
+	children = getChildren(formula_marcada)
+	
+	ramo1 = FormulaMarcada(children[0], True)
+
+	return [ramo1]
