@@ -34,3 +34,11 @@ class Ramo:
             if not isinstance(fm.formula, (Variable, Constant)):
                 return False
         return True
+
+    def extrair_contraexemplo(ramo: Ramo) -> dict:
+        contraexemplo = {}
+        for fm in ramo.formulas:
+            if isinstance(fm.formula, Variable):
+                var_name = fm.formula.name
+                contraexemplo[var_name] = fm.marca
+        return contraexemplo
