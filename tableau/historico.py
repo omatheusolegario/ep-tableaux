@@ -1,5 +1,4 @@
 
-from dataclasses import dataclass
 from typing import Iterable
 
 if __package__:
@@ -7,17 +6,7 @@ if __package__:
 else:
     from estruturas import EstadoTableau, EventoHistorico, FormulaMarcada, Ramo
 
-
-@dataclass
-class RegistroHistorico(EventoHistorico):
-    """Evento com os detalhes da expansão, compatível com EventoHistorico.
-    """
-
-    id_formula: int | None = None
-    formula: str | None = None
-    expansao: str | None = None
-    nome_regra: str | None = None
-    geradas: tuple[tuple[str, ...], ...] = ()
+RegistroHistorico = EventoHistorico
 
 
 def _formula_marcada(formula: FormulaMarcada) -> str:
@@ -95,3 +84,10 @@ def formatar_historico(historico: Iterable[EventoHistorico]) -> str:
                 linha += " | geradas: " + " ou ".join(alternativas)
         linhas.append(linha)
     return "\n".join(linhas) if linhas else "Histórico vazio."
+
+
+def imprimir_historico(historico: Iterable[EventoHistorico]) -> None:
+    """Imprime a descrição completa e a sequência de pares exigida no EP."""
+    eventos = list(historico)
+    print(formatar_historico(eventos))
+    print("Sequência de regras:", sequencia_regras(eventos))

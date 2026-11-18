@@ -1,5 +1,5 @@
 from code_base import ArgumentForm
-from estruturas import *
+from .estruturas import FormulaMarcada, Ramo
 
 def iniciar(argument: ArgumentForm) -> Ramo:
     premissas = argument.premises;

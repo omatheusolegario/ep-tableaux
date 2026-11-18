@@ -1,36 +1,77 @@
-from inicializador import iniciar
-from seletor import selecionar_formula
-from regras import aplicar_regra, criar_ramos
-from verificador import verificar_fechamento, obter_contraexemplo
-from historico import registrar_evento
-from estruturas import *
+
+from code_base import And, Or, Implies, Not
+from .estruturas import EstadoTableau, Ramo, ResultadoTableau
+from .historico import registrar_evento
+from .inicializador import iniciar
+from .seletor import selecionar_formula
+from .regras import aplicar_regra
+from .verificador import verificar_fechamento, obter_contraexemplo
+
+
+def _nome_regra(formula, tipo):
+    for classe, nome in ((And, "and"), (Or, "or"),
+                         (Implies, "implies"), (Not, "not")):
+        if isinstance(formula.formula, classe):
+            return f"{tipo}_{nome}"
+    raise ValueError("O seletor escolheu uma fórmula sem regra de expansão.")
+
 
 def resolver(argumento):
-    estado = EstadoTableau()
-    ramo_inicial = iniciar(argumento)
-    estado.ramos_pendentes.append(ramo_inicial)
+    """Testa premissas T e conclusão F; para no primeiro ramo aberto saturado."""
+    estado = EstadoTableau(ramos_pendentes=[iniciar(argumento)])
+    primeiro_ramo = True
 
     while estado.ramos_pendentes:
+        ramo = estado.ramos_pendentes.pop()
+        estado.ramo_atual = ramo
+        if not primeiro_ramo:
+            registrar_evento(estado, ramo, "retorno")
+        primeiro_ramo = False
 
-        estado.ramo_atual = estado.ramos_pendentes.pop()
-        ramo = estado.ramo_atual
+        # Expansões lineares permanecem no mesmo ramo.
+        while True:
+            if verificar_fechamento(ramo):
+                registrar_evento(estado, ramo, "fechamento")
+                break
 
-        if verificar_fechamento(ramo):
-            registrar_evento(estado ,ramo, "fechamento")
-            continue
+            formula = selecionar_formula(ramo)
+            if formula is None:
+                registrar_evento(estado, ramo, "saturacao")
+                return ResultadoTableau(
+                    valido=False,
+                    historico=estado.historico,
+                    contraexemplo=obter_contraexemplo(ramo),
+                    ramo_aberto=ramo,
+                )
+            if formula.id in ramo.expandidos:
+                raise ValueError("O seletor devolveu uma fórmula já expandida.")
 
-        formula = selecionar_formula(ramo)
-        if formula is None:
-            contraexemplo = obter_contraexemplo(ramo)
+            alternativas = aplicar_regra(formula)
+            if len(alternativas) not in (1, 2):
+                raise ValueError("Uma regra deve gerar uma ou duas alternativas.")
+            tipo = "alpha" if len(alternativas) == 1 else "beta"
+            nome = _nome_regra(formula, tipo)
+            registrar_evento(
+                estado, ramo, "expansao", formula=formula,
+                nome_regra=nome, expansao=tipo, geradas=alternativas,
+            )
+            ramo.expandidos.add(formula.id)
 
-            return ResultadoTableau(valido= False, historico = estado.historico, contraexemplo=contraexemplo, ramo_aberto=ramo)
+            if tipo == "alpha":
+                ramo.formulas.extend(alternativas[0])
+                continue
 
-        ramo.expandidos.add(formula.id)
+            filhos = [
+                Ramo(
+                    formulas=ramo.formulas + list(alternativa),
+                    expandidos=ramo.expandidos,
+                    ramo_pai=ramo.id,
+                )
+                for alternativa in alternativas
+            ]
+            # A pilha visita a primeira alternativa antes da segunda.
+            estado.ramos_pendentes.extend(reversed(filhos))
+            break
 
-        alternativas = aplicar_regra(formula) #devolve uma lista de listas: [[alpha]] ou [[beta 1], [beta 2]]
-        novos_ramos = criar_ramos(ramo, alternativas)
-
-        for novo_ramo in reversed(novos_ramos):
-            estado.ramos_pendentes.append(novo_ramo)
-
+    estado.ramo_atual = None
     return ResultadoTableau(valido=True, historico=estado.historico)
