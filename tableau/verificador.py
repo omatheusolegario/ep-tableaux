@@ -2,9 +2,10 @@ from code_base import Variable
 from .estruturas import Ramo
 
 def verificar_fechamento(ramo: Ramo) -> bool:
-    n = len(ramo.formulas)
-    for i in range(n):
-        for j in range(i + 1, n):
+    """Devolve um valor booleano indicando se o ramo fornecido está fechado."""
+    num_formulas = len(ramo.formulas)
+    for i in range(num_formulas):
+        for j in range(i + 1, num_formulas):
             f1 = ramo.formulas[i]
             f2 = ramo.formulas[j]
             if f1.formula.is_identical(f2.formula):
@@ -13,6 +14,7 @@ def verificar_fechamento(ramo: Ramo) -> bool:
     return False
 
 def extrair_contraexemplo(ramo: Ramo) -> dict:
+    """Extrai do ramo um contraexemplo."""
     contraexemplo = {}
     for f in ramo.formulas:
         if isinstance(f.formula, Variable):

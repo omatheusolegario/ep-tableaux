@@ -5,11 +5,12 @@ sys.path.insert(0, "../")
 
 from code_base import *
 
-def getChildren(formula_marcada: FormulaMarcada):
+def _getChildren(formula_marcada: FormulaMarcada):
 	return [c for c in formula_marcada.formula.children]
 
 def alpha_and(formula_marcada: FormulaMarcada) -> list[list[FormulaMarcada]]:
-	children = getChildren(formula_marcada)	
+	"""Retorna o resultado da expansão do tipo Alpha And."""
+	children =_getChildren(formula_marcada)	
 
 	new_c1 = FormulaMarcada(children[0], True)
 	new_c2 = FormulaMarcada(children[1], True)
@@ -17,27 +18,31 @@ def alpha_and(formula_marcada: FormulaMarcada) -> list[list[FormulaMarcada]]:
 	return [[new_c1, new_c2]]
 
 def alpha_or(formula_marcada: FormulaMarcada)-> list[list[FormulaMarcada]]:
-	children = getChildren(formula_marcada)
+	"""Retorna o resultado da expansão do tipo Alpha Or."""
+	children = _getChildren(formula_marcada)
 
 	new_c1 = FormulaMarcada(children[0], False)
 	new_c2 = FormulaMarcada(children[1], False)
 	return [[new_c1, new_c2]]
 
 def alpha_implies(formula_marcada: FormulaMarcada)-> list[list[FormulaMarcada]]: 
-	children = getChildren(formula_marcada)      	
+	"""Retorna o resultado da expansão do tipo Alpha Implies."""
+	children = _getChildren(formula_marcada)      	
  
 	new_c1 = FormulaMarcada(children[0], True) 
 	new_c2 = FormulaMarcada(children[1], False)
 	return [[new_c1, new_c2]]
 
 def alpha_not(formula_marcada: FormulaMarcada)-> list[list[FormulaMarcada]]: 
-	children = getChildren(formula_marcada)
+	"""Retorna o resultado da expansão do tipo Alpha Not."""
+	children = _getChildren(formula_marcada)
 
 	new_c1 = FormulaMarcada(children[0], False)
 	return [[new_c1]]
 
 def beta_and(formula_marcada: FormulaMarcada)-> list[list[FormulaMarcada]]: 
-	children = getChildren(formula_marcada)
+	"""Retorna o resultado da expansão do tipo Beta And."""
+	children = _getChildren(formula_marcada)
 	
 	ramo1 = FormulaMarcada(children[0], False)
 	ramo2 = FormulaMarcada(children[1], False)
@@ -45,7 +50,8 @@ def beta_and(formula_marcada: FormulaMarcada)-> list[list[FormulaMarcada]]:
 	return [[ramo1], [ramo2]]
 
 def beta_or(formula_marcada: FormulaMarcada)-> list[list[FormulaMarcada]]:
-	children = getChildren(formula_marcada)
+	"""Retorna o resultado da expansão do tipo Beta Or."""
+	children = _getChildren(formula_marcada)
 
 	ramo1 = FormulaMarcada(children[0], True)
 	ramo2 = FormulaMarcada(children[1], True)
@@ -53,7 +59,8 @@ def beta_or(formula_marcada: FormulaMarcada)-> list[list[FormulaMarcada]]:
 	return [[ramo1], [ramo2]]
 
 def beta_implies(formula_marcada: FormulaMarcada)-> list[list[FormulaMarcada]]:
-	children = getChildren(formula_marcada)
+	"""Retorna o resultado da expansão do tipo Beta Implies."""
+	children = _getChildren(formula_marcada)
 
 	ramo1 = FormulaMarcada(children[0], False)
 	ramo2 = FormulaMarcada(children[1], True)
@@ -61,13 +68,15 @@ def beta_implies(formula_marcada: FormulaMarcada)-> list[list[FormulaMarcada]]:
 	return [[ramo1], [ramo2]]
 
 def beta_not(formula_marcada: FormulaMarcada)-> list[list[FormulaMarcada]]:
-	children = getChildren(formula_marcada)
+	"""Retorna o resultado da expansão do tipo Beta Not."""
+	children = _getChildren(formula_marcada)
 	
 	ramo1 = FormulaMarcada(children[0], True)
 
 	return [[ramo1]]
 
 def aplicar_regra(formula: tuple[FormulaMarcada | None, str | None]) -> list[list[FormulaMarcada]]:
+	"""De acordo com a formula e seu tipo, retorna a expansão utilizando a regra correta."""
 	formula_selecionada, tipo = formula
 	match tipo:
 		case "alpha_and":

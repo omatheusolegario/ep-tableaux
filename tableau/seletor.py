@@ -1,8 +1,8 @@
 from code_base import And, Or, Implies, Not
 from .estruturas import FormulaMarcada, Ramo
 
-
 def classificar(formula: FormulaMarcada) -> str | None:
+    """Devolve qual a regra da formula em questão."""
     f = formula.formula
     marca = formula.marca
 
@@ -25,6 +25,7 @@ def _tamanho(proposicao) -> int:
 
 
 def selecionar_formula(ramo: Ramo) -> tuple[FormulaMarcada | None, str | None]:
+    """Retorna uma tupla com a melhor formula selecionada (pode ser None) e qual o tipo de regra dela (pode ser None)."""
     melhor_beta = None
     tipo_da_melhor = None
 
