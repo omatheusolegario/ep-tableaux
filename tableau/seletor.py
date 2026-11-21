@@ -26,9 +26,10 @@ def _tamanho(proposicao) -> int:
 
 def selecionar_formula(ramo: Ramo) -> tuple[FormulaMarcada | None, str | None]:
     melhor_beta = None
+    tipo_da_melhor = None
 
-    for index, formula in enumerate(ramo.formulas):
-        if index in ramo.expandidos:
+    for formula in ramo.formulas:
+        if formula.id in ramo.expandidos:
             continue
 
         tipo = classificar(formula)
@@ -39,5 +40,6 @@ def selecionar_formula(ramo: Ramo) -> tuple[FormulaMarcada | None, str | None]:
         if tipo is not None and tipo[0].startswith("b"):
             if melhor_beta is None or _tamanho(formula.formula) < _tamanho(melhor_beta.formula):
                 melhor_beta = formula
+                tipo_da_melhor = tipo
 
-    return melhor_beta, tipo
+    return melhor_beta, tipo_da_melhor

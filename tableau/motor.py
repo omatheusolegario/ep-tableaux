@@ -24,7 +24,7 @@ def resolver(argumento):
                 break
 
             formula = selecionar_formula(ramo)
-            if formula is None:
+            if formula[0] is None:
                 registrar_evento(estado, ramo, "saturacao")
                 return ResultadoTableau(
                     valido=False,
@@ -36,7 +36,7 @@ def resolver(argumento):
                 raise ValueError("O seletor devolveu uma fórmula já expandida.")
 
             alternativas = aplicar_regra(formula)
-            if alternativas is not None and len(alternativas) not in (1, 2):
+            if len(alternativas) not in (1, 2):
                 raise ValueError("Uma regra deve gerar uma ou duas alternativas.")
             registrar_evento(
                 estado, ramo, "expansao", formula=formula[0],
@@ -50,7 +50,7 @@ def resolver(argumento):
 
             filhos = [
                 Ramo(
-                    formulas=ramo.formulas + list(alternativa),
+                    formulas=ramo.formulas + alternativa,
                     expandidos=ramo.expandidos,
                 )
                 for alternativa in alternativas
