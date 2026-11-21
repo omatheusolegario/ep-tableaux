@@ -1,77 +1,73 @@
-
-from code_base import And, Or, Implies, Not
 from .estruturas import EstadoTableau, Ramo, ResultadoTableau
 from .historico import registrar_evento
 from .inicializador import iniciar
 from .seletor import selecionar_formula
 from .regras import aplicar_regra
-from .verificador import verificar_fechamento, obter_contraexemplo
-
-
-def _nome_regra(formula, tipo):
-    for classe, nome in ((And, "and"), (Or, "or"),
-                         (Implies, "implies"), (Not, "not")):
-        if isinstance(formula.formula, classe):
-            return f"{tipo}_{nome}"
-    raise ValueError("O seletor escolheu uma fórmula sem regra de expansão.")
-
+from .verificador import verificar_fechamento, extrair_contraexemplo
 
 def resolver(argumento):
     """Testa premissas T e conclusão F; para no primeiro ramo aberto saturado."""
+
+    # Inicia o tableau marcando com True as premissas e False a conclusão
     estado = EstadoTableau(ramos_pendentes=[iniciar(argumento)])
     primeiro_ramo = True
 
+    # Enquanto existirem ramos na pilha não expandidos
     while estado.ramos_pendentes:
+        # Tira um ramo do topo da pilha e usa ele como atual
         ramo = estado.ramos_pendentes.pop()
         estado.ramo_atual = ramo
         if not primeiro_ramo:
             registrar_evento(estado, ramo, "retorno")
         primeiro_ramo = False
 
-        # Expansões lineares permanecem no mesmo ramo.
+        # Expansões alpha permanecem no mesmo ramo
         while True:
+    
             if verificar_fechamento(ramo):
                 registrar_evento(estado, ramo, "fechamento")
                 break
 
+            # Seleciona a melhor formula para ser expandida (pode ser nenhuma == ramo saturado)
             formula = selecionar_formula(ramo)
-            if formula is None:
+            if formula[0] is None:
                 registrar_evento(estado, ramo, "saturacao")
                 return ResultadoTableau(
                     valido=False,
                     historico=estado.historico,
-                    contraexemplo=obter_contraexemplo(ramo),
+                    contraexemplo=extrair_contraexemplo(ramo),
                     ramo_aberto=ramo,
                 )
-            if formula.id in ramo.expandidos:
-                raise ValueError("O seletor devolveu uma fórmula já expandida.")
 
+            # Expande a formula selecionada em uma lista de listas de FormulaMarcada
             alternativas = aplicar_regra(formula)
-            if len(alternativas) not in (1, 2):
-                raise ValueError("Uma regra deve gerar uma ou duas alternativas.")
-            tipo = "alpha" if len(alternativas) == 1 else "beta"
-            nome = _nome_regra(formula, tipo)
-            registrar_evento(
-                estado, ramo, "expansao", formula=formula,
-                nome_regra=nome, expansao=tipo, geradas=alternativas,
-            )
-            ramo.expandidos.add(formula.id)
 
-            if tipo == "alpha":
+            registrar_evento(
+                estado, ramo, "expansao", formula=formula[0],
+                nome_regra=formula[1], expansao="alpha" if formula[1].startswith("a") else "beta", geradas=alternativas,
+            )
+
+            # Marca a formula como expandida
+            ramo.expandidos.add(formula[0].id)
+
+            # Se é formula alpha, continua no While == permanece no mesmo ramo
+            if formula[1].startswith("a"):
                 ramo.formulas.extend(alternativas[0])
                 continue
 
+            # Se é formula beta, cria dois ramos copiando o que tinha no ramo pai e adicionando as formulas expandidas
             filhos = [
                 Ramo(
-                    formulas=ramo.formulas + list(alternativa),
-                    expandidos=ramo.expandidos,
-                    ramo_pai=ramo.id,
+                    formulas=ramo.formulas.copy() + alternativa,
+                    expandidos=ramo.expandidos.copy(),
                 )
                 for alternativa in alternativas
             ]
-            # A pilha visita a primeira alternativa antes da segunda.
+
+            # Coloca invertido para que na pilha a ordem fique usual
             estado.ramos_pendentes.extend(reversed(filhos))
             break
 
+    # Se chegou aqui é porque é valida, sem ramos abertos, todos fechados com contradição
     estado.ramo_atual = None
     return ResultadoTableau(valido=True, historico=estado.historico)

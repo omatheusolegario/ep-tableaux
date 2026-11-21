@@ -2,6 +2,7 @@ from code_base import ArgumentForm
 from .estruturas import FormulaMarcada, Ramo
 
 def iniciar(argument: ArgumentForm) -> Ramo:
+    """Recebe um sequente, marca como verdadeira as premissas e como falsa a conclusão, retorna um ramo."""
     premissas = argument.premises;
     conclusao = argument.conclusion;
     formulas = []
