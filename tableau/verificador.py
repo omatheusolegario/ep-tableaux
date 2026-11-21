@@ -7,7 +7,7 @@ def verificar_fechamento(ramo: Ramo) -> bool:
         for j in range(i + 1, n):
             f1 = ramo.formulas[i]
             f2 = ramo.formulas[j]
-            if f1.formula.is_identical(f2.formula) or f1.formula.is_equivalent(f2.formula):
+            if f1.formula.is_identical(f2.formula):
                 if f1.marca != f2.marca:
                     return True
     return False
