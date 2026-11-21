@@ -7,13 +7,13 @@ def classificar(formula: FormulaMarcada) -> str | None:
     marca = formula.marca
 
     if isinstance(f, And):
-        return "alpha" if marca else "beta"
+        return "alpha_and" if marca else "beta_and"
     if isinstance(f, Or):
-        return "beta" if marca else "alpha"
+        return "beta_or" if marca else "alpha_or"
     if isinstance(f, Implies):
-        return "beta" if marca else "alpha"
+        return "beta_implies" if marca else "alpha_implies"
     if isinstance(f, Not):
-        return "alpha"
+        return "alpha_not" if marca else "beta_not"
     return None
 
 
@@ -24,20 +24,20 @@ def _tamanho(proposicao) -> int:
     return total
 
 
-def selecionar_formula(ramo: Ramo) -> FormulaMarcada | None:
+def selecionar_formula(ramo: Ramo) -> tuple[FormulaMarcada | None, str | None]:
     melhor_beta = None
 
-    for formula in ramo.formulas:
-        if formula.id in ramo.expandidos:
+    for index, formula in enumerate(ramo.formulas):
+        if index in ramo.expandidos:
             continue
 
         tipo = classificar(formula)
 
-        if tipo == "alpha":
-            return formula
+        if tipo is not None and tipo[0].startswith("a"):
+            return formula, tipo
 
-        if tipo == "beta":
+        if tipo is not None and tipo[0].startswith("b"):
             if melhor_beta is None or _tamanho(formula.formula) < _tamanho(melhor_beta.formula):
                 melhor_beta = formula
 
-    return melhor_beta
+    return melhor_beta, tipo

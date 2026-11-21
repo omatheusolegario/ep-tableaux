@@ -1,20 +1,9 @@
-
-from code_base import And, Or, Implies, Not
 from .estruturas import EstadoTableau, Ramo, ResultadoTableau
 from .historico import registrar_evento
 from .inicializador import iniciar
 from .seletor import selecionar_formula
 from .regras import aplicar_regra
-from .verificador import verificar_fechamento, obter_contraexemplo
-
-
-def _nome_regra(formula, tipo):
-    for classe, nome in ((And, "and"), (Or, "or"),
-                         (Implies, "implies"), (Not, "not")):
-        if isinstance(formula.formula, classe):
-            return f"{tipo}_{nome}"
-    raise ValueError("O seletor escolheu uma fórmula sem regra de expansão.")
-
+from .verificador import verificar_fechamento, extrair_contraexemplo
 
 def resolver(argumento):
     """Testa premissas T e conclusão F; para no primeiro ramo aberto saturado."""
@@ -40,24 +29,22 @@ def resolver(argumento):
                 return ResultadoTableau(
                     valido=False,
                     historico=estado.historico,
-                    contraexemplo=obter_contraexemplo(ramo),
+                    contraexemplo=extrair_contraexemplo(ramo),
                     ramo_aberto=ramo,
                 )
-            if formula.id in ramo.expandidos:
+            if formula[0].id in ramo.expandidos:
                 raise ValueError("O seletor devolveu uma fórmula já expandida.")
 
             alternativas = aplicar_regra(formula)
-            if len(alternativas) not in (1, 2):
+            if alternativas is not None and len(alternativas) not in (1, 2):
                 raise ValueError("Uma regra deve gerar uma ou duas alternativas.")
-            tipo = "alpha" if len(alternativas) == 1 else "beta"
-            nome = _nome_regra(formula, tipo)
             registrar_evento(
-                estado, ramo, "expansao", formula=formula,
-                nome_regra=nome, expansao=tipo, geradas=alternativas,
+                estado, ramo, "expansao", formula=formula[0],
+                nome_regra=formula[1], expansao="alpha" if formula[1].startswith("a") else "beta", geradas=alternativas,
             )
-            ramo.expandidos.add(formula.id)
+            ramo.expandidos.add(formula[0].id)
 
-            if tipo == "alpha":
+            if formula[1].startswith("a"):
                 ramo.formulas.extend(alternativas[0])
                 continue
 
@@ -65,7 +52,6 @@ def resolver(argumento):
                 Ramo(
                     formulas=ramo.formulas + list(alternativa),
                     expandidos=ramo.expandidos,
-                    ramo_pai=ramo.id,
                 )
                 for alternativa in alternativas
             ]
