@@ -1,4 +1,4 @@
-from .estruturas import *
+from .estruturas import FormulaMarcada
 
 import sys
 sys.path.insert(0, "../")
