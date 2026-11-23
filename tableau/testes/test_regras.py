@@ -1,13 +1,9 @@
-import sys
-sys.path.insert(0, "../")
-sys.path.insert(1, "../../")
-
 import unittest
 
 from code_base import And, Implies, Not, Or, Variable, vars
 
-from estruturas import FormulaMarcada 
-import regras
+from tableau.estruturas import FormulaMarcada 
+from tableau import regras
 
 
 class BaseTestRegras(unittest.TestCase):

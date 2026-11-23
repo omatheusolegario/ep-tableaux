@@ -1,12 +1,8 @@
 import unittest
 
-import sys
-sys.path.insert(0, "../")
-sys.path.insert(1, "../../")
-
 from code_base import Variable, And, Or, Implies, Not, vars
-from estruturas import FormulaMarcada, Ramo
-import seletor
+from tableau.estruturas import FormulaMarcada, Ramo
+from tableau import seletor
 
 class TestClassificar(unittest.TestCase):
     """Testes para a função classificar(formula: FormulaMarcada)."""

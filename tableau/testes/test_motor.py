@@ -1,13 +1,9 @@
 import unittest
 from unittest.mock import MagicMock, call, patch
 
-import sys
-sys.path.insert(0, "../")
-sys.path.insert(1, "../../")
-
 from code_base import ArgumentForm, vars
-from estruturas import EstadoTableau, EventoHistorico, FormulaMarcada, Ramo, ResultadoTableau
-import motor
+from tableau.estruturas import EstadoTableau, EventoHistorico, FormulaMarcada, Ramo, ResultadoTableau
+from tableau import motor
 
 
 class TestMotorResolver(unittest.TestCase):

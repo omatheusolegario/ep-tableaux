@@ -2,13 +2,9 @@ import io
 import unittest
 from unittest.mock import patch
 
-import sys
-sys.path.insert(0, "../")
-sys.path.insert(1, "../../")
-
 from code_base import Variable, And, Or, vars
-from estruturas import EstadoTableau, EventoHistorico, FormulaMarcada, Ramo
-import historico
+from tableau.estruturas import EstadoTableau, EventoHistorico, FormulaMarcada, Ramo
+from tableau import historico
 
 class TestFormulaMarcadaFormatacao(unittest.TestCase):
     """Testes para a função auxiliar _formula_marcada."""
