@@ -2,7 +2,7 @@ from code_base import ArgumentForm, vars, Proposition
 from tableau.motor import resolver
 from tableau.estruturas import ResultadoTableau
 
-def terminalToArgumentForm(entrada_premissa: str, entrada_conclusao: str) -> ArgumentForm:
+def _terminalToArgumentForm(entrada_premissa: str, entrada_conclusao: str) -> ArgumentForm:
     premissas = [premissa.strip() for premissa in entrada_premissa.split(",") if premissa.strip()]
     conclusao = entrada_conclusao.strip()
 
@@ -41,7 +41,7 @@ def terminalToArgumentForm(entrada_premissa: str, entrada_conclusao: str) -> Arg
     return formula
 
 def exibir_resultado(resultado: ResultadoTableau):
-    bar()
+    _bar()
     print(f"Válido: {'SIM' if resultado.valido else 'NÃO'}")
 
     if not resultado.valido:
@@ -64,9 +64,9 @@ def exibir_resultado(resultado: ResultadoTableau):
     else:
         print("Nenhuma regra aplicada.")
     
-    bar()
+    _bar()
 
-def bar():
+def _bar():
     print("\n=======================================================\n")
 
 def cli():
@@ -78,14 +78,14 @@ def cli():
         try:
             entrada_premissa = input("Digite as premissas (separadas por vírgulas, Enter se não houver):\n")
             if entrada_premissa == "0":
-                bar()
+                _bar()
                 break
             entrada_conclusao = input("Digite a conclusão:\n")
             if entrada_conclusao == "0":
-                bar()
+                _bar()
                 break
             
-            sequente = terminalToArgumentForm(entrada_premissa, entrada_conclusao)
+            sequente = _terminalToArgumentForm(entrada_premissa, entrada_conclusao)
             resultado = resolver(sequente)
              
         except Exception as erro:
@@ -100,7 +100,7 @@ def cli():
             opcao= input("Opção inválida. Digite 1 para sim 0 para não: ").strip()
 
         if opcao == "0":
-            bar()
+            _bar()
             break
 
-        bar()
+        _bar()
