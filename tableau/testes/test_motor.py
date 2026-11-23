@@ -12,9 +12,9 @@ class TestMotorResolver(unittest.TestCase):
     def setUp(self):
         self.P, self.Q, self.R = vars('P', 'Q', 'R')
 
-    @patch('motor.iniciar')
-    @patch('motor.verificar_fechamento')
-    @patch('motor.registrar_evento')
+    @patch('tableau.motor.iniciar')
+    @patch('tableau.motor.verificar_fechamento')
+    @patch('tableau.motor.registrar_evento')
     def test_ramo_inicial_ja_fecha(self, mock_registrar, mock_verificar, mock_iniciar):
         """Caso o ramo inicial já contenha contradição imediata (ex: T(P) e F(P))."""
         f_p_t = FormulaMarcada(self.P, True)
@@ -33,11 +33,11 @@ class TestMotorResolver(unittest.TestCase):
         self.assertIsInstance(resultado, ResultadoTableau)
         self.assertTrue(resultado.valido)
 
-    @patch('motor.iniciar')
-    @patch('motor.verificar_fechamento')
-    @patch('motor.selecionar_formula')
-    @patch('motor.extrair_contraexemplo')
-    @patch('motor.registrar_evento')
+    @patch('tableau.motor.iniciar')
+    @patch('tableau.motor.verificar_fechamento')
+    @patch('tableau.motor.selecionar_formula')
+    @patch('tableau.motor.extrair_contraexemplo')
+    @patch('tableau.motor.registrar_evento')
     def test_ramo_satura_sem_fechar_invalido(
         self, mock_registrar, mock_extrair, mock_selecionar, mock_verificar, mock_iniciar
     ):
@@ -62,11 +62,11 @@ class TestMotorResolver(unittest.TestCase):
         self.assertEqual(resultado.contraexemplo, {'P': True, 'Q': False})
         self.assertIs(resultado.ramo_aberto, ramo_inicial)
 
-    @patch('motor.iniciar')
-    @patch('motor.verificar_fechamento')
-    @patch('motor.selecionar_formula')
-    @patch('motor.aplicar_regra')
-    @patch('motor.registrar_evento')
+    @patch('tableau.motor.iniciar')
+    @patch('tableau.motor.verificar_fechamento')
+    @patch('tableau.motor.selecionar_formula')
+    @patch('tableau.motor.aplicar_regra')
+    @patch('tableau.motor.registrar_evento')
     def test_expansao_regra_alpha_permanece_no_mesmo_ramo(
         self, mock_registrar, mock_aplicar, mock_selecionar, mock_verificar, mock_iniciar
     ):
@@ -107,11 +107,11 @@ class TestMotorResolver(unittest.TestCase):
             call(unittest.mock.ANY, ramo_inicial, "fechamento"),
         ])
 
-    @patch('motor.iniciar')
-    @patch('motor.verificar_fechamento')
-    @patch('motor.selecionar_formula')
-    @patch('motor.aplicar_regra')
-    @patch('motor.registrar_evento')
+    @patch('tableau.motor.iniciar')
+    @patch('tableau.motor.verificar_fechamento')
+    @patch('tableau.motor.selecionar_formula')
+    @patch('tableau.motor.aplicar_regra')
+    @patch('tableau.motor.registrar_evento')
     def test_expansao_regra_beta_bifurca_ramos_com_fechamento(
         self, mock_registrar, mock_aplicar, mock_selecionar, mock_verificar, mock_iniciar
     ):
@@ -148,12 +148,12 @@ class TestMotorResolver(unittest.TestCase):
         # Como houve mais de 1 ramo, os subsequentes disparam evento "retorno"
         mock_registrar.assert_any_call(unittest.mock.ANY, unittest.mock.ANY, "retorno")
 
-    @patch('motor.iniciar')
-    @patch('motor.verificar_fechamento')
-    @patch('motor.selecionar_formula')
-    @patch('motor.aplicar_regra')
-    @patch('motor.extrair_contraexemplo')
-    @patch('motor.registrar_evento')
+    @patch('tableau.motor.iniciar')
+    @patch('tableau.motor.verificar_fechamento')
+    @patch('tableau.motor.selecionar_formula')
+    @patch('tableau.motor.aplicar_regra')
+    @patch('tableau.motor.extrair_contraexemplo')
+    @patch('tableau.motor.registrar_evento')
     def test_expansao_beta_com_um_ramo_aberto(
         self, mock_registrar, mock_extrair, mock_aplicar, mock_selecionar, mock_verificar, mock_iniciar
     ):

@@ -5,9 +5,9 @@ sys.path.insert(0, "../")
 sys.path.insert(1, "../../")
 
 from code_base import *
-from estruturas import *
-import regras
-import verificador
+from tableau.estruturas import *
+from tableau import regras
+from tableau import verificador
 
 class TestVerificadorFechamento(unittest.TestCase):
     """Testes para a função verificar_fechamento."""
