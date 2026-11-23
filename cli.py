@@ -15,7 +15,7 @@ def _terminalToArgumentForm(entrada_premissa: str, entrada_conclusao: str) -> Ar
 
     for premissa in premissas:
         for char in premissa:
-            if char.isupper():
+            if char.isascii() and char.isalpha():
                 if not {char}.issubset(proposicao):
                     proposicao.add(char)
                     variaveis[len(proposicao)-1], = vars(char)
@@ -23,7 +23,7 @@ def _terminalToArgumentForm(entrada_premissa: str, entrada_conclusao: str) -> Ar
             
     
     for char in conclusao:
-        if char.isupper():
+        if char.isascii() and char.isalpha():
             if not {char}.issubset(proposicao):
                 proposicao.add(char)
                 variaveis[len(proposicao)-1], = vars(char)
