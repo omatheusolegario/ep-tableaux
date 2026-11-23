@@ -30,10 +30,10 @@ class EventoHistorico:
     id_ramo: int
     acao: str
     id_formula: int
-    formula: FormulaMarcada | None = None,
-    nome_regra: str | None = None,
-    expansao: str | None = None,
-    geradas: Iterable[Iterable[FormulaMarcada]] | None = None,
+    formula: FormulaMarcada | None = None
+    nome_regra: str | None = None
+    expansao: str | None = None
+    geradas: Iterable[Iterable[FormulaMarcada]] | None = None
 
 @dataclass
 class EstadoTableau:
