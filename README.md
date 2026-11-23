@@ -11,20 +11,20 @@ Segue um conjunto de instruções para utilizar o nosso provador de teoremas. Pa
 
 ### Via Código
 1) Instancie os átomos:
-```
+```python
 # todos os átomos que serão utilizados nas fórmulas precisam ser declarados
 from code_base import ArgumentForm, vars, Proposition
 P,Q= vars('P', 'Q')
 ```
 2) Declare os sequentes:
-```
+```python
 sequente = ArgumentForm(
   P, P >> Q,    #premises
   conclusion = Q
 )
 ```
 3) Obtenha o resultado!
-```
+```python
 from tableau.motor import resolver
 from tableau.estruturas import ResultadoTableau
 resultado: ResultadoTableau = resolver(sequente)
@@ -48,7 +48,7 @@ O projeto possui testes unitários desenvolvidos com o framework `unittest`. A e
 ### Testando todos os módulos
 
 Para testar todos os módulos, utilize o comando: 
-`python3 -m unittest discover -s tableau/testes -v` ou `python3 -m unittest discover -s tableau/testes -v`
+`python3 -m unittest discover -s tableau/testes -v` ou `python -m unittest discover -s tableau/testes -v`
 
 ### Testando módulos separadamente
 
