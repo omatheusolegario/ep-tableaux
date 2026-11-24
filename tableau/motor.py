@@ -5,7 +5,7 @@ from .seletor import selecionar_formula
 from .regras import aplicar_regra
 from .verificador import verificar_fechamento, extrair_contraexemplo
 
-def resolver(argumento):
+def resolver(argumento) -> ResultadoTableau:
     """Testa premissas T e conclusão F; para no primeiro ramo aberto saturado."""
 
     # Inicia o tableau marcando com True as premissas e False a conclusão
