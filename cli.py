@@ -60,7 +60,7 @@ def exibir_resultado(resultado: ResultadoTableau):
                 geradas_formatada = ", ".join(gerada[0])
             else:
                 geradas_formatada= " | ".join(f"({', '.join(ramo)})" for ramo in gerada)
-            print(f"{i}. ({regra}, {formula} ==> {geradas_formatada })")
+            print(f"{i}. ({regra}, {formula} ---> {geradas_formatada })")
     else:
         print("Nenhuma regra aplicada.")
     
